@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Prestataire index{% endblock %}
+
+{% block body %}
+    <h1>Prestataire index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nom</th>
+                <th>RaisonSocial</th>
+                <th>Ninea</th>
+                <th>Adresse</th>
+                <th>IsActive</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for prestataire in prestataires %}
+            <tr>
+                <td>{{ prestataire.id }}</td>
+                <td>{{ prestataire.Nom }}</td>
+                <td>{{ prestataire.RaisonSocial }}</td>
+                <td>{{ prestataire.Ninea }}</td>
+                <td>{{ prestataire.Adresse }}</td>
+                <td>{{ prestataire.isActive ? 'Yes' : 'No' }}</td>
+                <td>
+                    <a href="{{ path('prestataire_show', {'id': prestataire.id}) }}">show</a>
+                    <a href="{{ path('prestataire_edit', {'id': prestataire.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('prestataire_new') }}">Create new</a>
+{% endblock %}
