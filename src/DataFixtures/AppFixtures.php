@@ -18,7 +18,6 @@ class AppFixtures extends Fixture
     public function load(ObjectManager $manager)
     {
         $admin1 = new Admin("admin");
-     $admin1->setUsername('admine');
      $password = $this->encoder->encodePassword($admin1 ,'admin');
      $admin1->setpassword($password);
             $admin1->setUsername('Cheikh');
@@ -38,7 +37,7 @@ class AppFixtures extends Fixture
                 $admin2->setNomComplet('Maimouna Gaye');
                 $admin2->setNumeroIdentite(1842369254);
                     $manager->persist($admin2);
-                    $manager->flush()
+                    
                     ;
     
         $manager->flush();
