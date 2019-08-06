@@ -20,6 +20,8 @@ class UserType extends AbstractType
             ->add('Telephone')
             ->add('Statut')
             ->add('NumeroIdentité')
+            ->add('Profil')
+            ->add('imageName')
             ->add('prestataire')
         ;
     }

@@ -35,7 +35,7 @@ class PrestataireController extends AbstractController
 
      /**
      * 
-     * @Route Rest\post("/prestataire", name="prestataire_new", methods={"GET","POST"})
+     * @Route("/prestataire", name="prestataire_new", methods={"GET","POST"})
      */
     public function postnew(Request $request, UserPasswordEncoderInterface $passwordEncoder, EntityManagerInterface $entityManager, SerializerInterface $serializer, ValidatorInterface $validator ): Response
     {
@@ -51,25 +51,30 @@ class PrestataireController extends AbstractController
   $prestataire->setIsActive($values->isActive);
  
 
-  $user = new User();
- 
-  $user->setPrestataire($prestataire);
-  $user->setUsername($values->username);
-  $user->setRoles($user->getRoles(["ROLE_ADMIN_SYSTEME"]));
-  $user->setPassword($passwordEncoder->encodePassword($user, $values->password));
-  $user->setNomComplet($values->nomComplet);
-  $user->setAdresse($values->adresse);
-  $user->setNumeroIdentité($values->numeroIdentité);
-  $user->setTelephone($values->telephone);
-  $user->setStatut($values->statut);
+  $admin = new User();
+  $form = $this->createForm(UserFormType::class, $admin);
+  $form->handleRequest($request);
+  $data=$request->request->all();
+  $form->submit($data);  
+  $file=$request->files->all()['imageName'];
+  $admin->setImageFile($file);
+  $admin->setPrestataire($prestataire);
+  $admin->setUsername($values->username);
+  $admin->setPassword($passwordEncoder->encodePassword($admin, $values->password));
+  $admin->setNomComplet($values->nomComplet);
+  $admin->setAdresse($values->adresse);
+  $admin->setNumeroIdentité($values->numeroIdentité);
+  $admin->setTelephone($values->telephone);
+  $admin->setStatut($values->statut);
   
+
   $creationCompte = new CreationCompte();
   
   $creationCompte->setNumeroCompte($random);
   $creationCompte->setSolde($values->solde);
   $creationCompte->setCompteprestataire($prestataire);
 
-  $errors = $validator->validate($user);
+  $errors = $validator->validate($admin);
   if(count($errors)) {
       $errors = $serializer->serialize($errors, 'json');
       return new Response($errors, 500, [
@@ -80,24 +85,24 @@ class PrestataireController extends AbstractController
      $errors = $validator->validate($prestataire);
      if(count($errors)) {
          $errors = $serializer->serialize($errors, 'json');
-         return new Response($errors, 500, [
+         return new Response ($errors, 500, [
              'Content-Type' => 'application/json'
          ]);
         }   
   
   $entityManager->persist($prestataire);
-  $entityManager->persist($user);
+  $entityManager->persist($admin);
   $entityManager->persist($creationCompte);
   $entityManager->flush();
-
-  
  }
+  
+ 
  
 
     /**
      * @Route("/register", name="register", methods={"POST"})
      */
-    public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder, EntityManagerInterface $entityManager)
+  /*  public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder, EntityManagerInterface $entityManager)
     {
         $values = json_decode($request->getContent());
         if(isset($values->username,$values->password)) {
@@ -126,6 +131,7 @@ class PrestataireController extends AbstractController
     /**
      * @Route("/{id}", name="prestataire_show", methods={"GET"})
      */
+
     public function show(Prestataire $prestataire)
     {
         return $this->render('prestataire/show.html.twig', [
